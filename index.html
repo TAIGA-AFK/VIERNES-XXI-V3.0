@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VIERNES XXI</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap');
+    
+        /* Estilo General */
+        body {
+            font-family: 'Poppins', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(135deg, #1e1e2f, #141421);
+            color: #f3f4f6;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            padding-bottom: 50px;
+            animation: gradientAnimation 8s ease infinite;
+        }
+    
+        h1 {
+            font-size: 40px;
+            color: #fff;
+            text-shadow: 0 4px 15px rgba(0, 0, 0, 0.7);
+            margin: 20px 0;
+            background: linear-gradient(90deg, #6c63ff, #ff6363, #63ffa4);
+            background-size: 300%;
+            animation: textAnimation 5s linear infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    
+        p {
+            font-size: 20px;
+            color: #d1d1e0;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+    
+        /* Contenedor principal */
+        .container {
+            background: rgba(43, 43, 61, 0.8);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            padding: 30px;
+            max-width: 800px;
+            width: 90%;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.5);
+            animation: fadeIn 1s ease-in-out;
+        }
+    
+        /* Inputs y Botones */
+        .input-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+    
+        input {
+            padding: 15px;
+            font-size: 16px;
+            border: none;
+            border-radius: 10px;
+            background: #2b2b3d;
+            color: #fff;
+            box-shadow: 0 4px 15px rgba(108, 99, 255, 0.3);
+            transition: all 0.3s ease-in-out;
+            width: 100%;
+            max-width: 350px;
+        }
+    
+        input:focus {
+            box-shadow: 0 0 10px rgba(108, 99, 255, 0.8);
+            outline: none;
+            transform: scale(1.05);
+        }
+    
+        button {
+            padding: 15px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            border: none;
+            border-radius: 50px;
+            background: linear-gradient(135deg, #ff6363, #63ffa4, #6c63ff);
+            background-size: 300%;
+            color: #fff;
+            cursor: pointer;
+            box-shadow: 0 6px 15px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease;
+            animation: buttonAnimation 6s linear infinite;
+        }
+    
+        button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 12px 25px rgba(255, 99, 99, 0.6);
+        }
+    
+        button:active {
+            transform: scale(0.95);
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.5);
+        }
+    
+        /* Canvas */
+        canvas {
+            margin: 30px auto;
+            display: block;
+            background: linear-gradient(135deg, #ffffff, #f3f3f3);
+            border: 3px solid rgba(108, 99, 255, 0.6);
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.5);
+            width: 100%;
+            max-width: 1200px;
+            animation: fadeIn 1.5s ease-in-out;
+        }
+    
+        /* Secciones */
+        .results,
+        .legend,
+        .rules,
+        .explanation {
+            background: rgba(30, 30, 47, 0.8);
+            backdrop-filter: blur(10px);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 30px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+            animation: slideUp 1s ease-in-out;
+        }
+    
+        .results h3,
+        .legend h3,
+        .rules h3,
+        .explanation h3 {
+            font-size: 24px;
+            margin-bottom: 10px;
+            color: #ffffff;
+            text-align: center;
+            background: linear-gradient(135deg, #ff6363, #63ffa4);
+            background-size: 300%;
+            animation: textAnimation 5s linear infinite;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+    
+        ul {
+            list-style: none;
+            padding: 0;
+        }
+    
+        li {
+            font-size: 16px;
+            color: #d1d1e0;
+            margin: 10px 0;
+        }
+    
+        /* Animaciones */
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    
+        @keyframes gradientAnimation {
+            0% {
+                background: linear-gradient(135deg, #1e1e2f, #141421);
+            }
+            50% {
+                background: linear-gradient(135deg, #141421, #1e1e2f);
+            }
+            100% {
+                background: linear-gradient(135deg, #1e1e2f, #141421);
+            }
+        }
+    
+        @keyframes textAnimation {
+            0% {
+                background-position: 0%;
+            }
+            100% {
+                background-position: 200%;
+            }
+        }
+    
+        @keyframes buttonAnimation {
+            0% {
+                background-position: 0%;
+            }
+            100% {
+                background-position: 200%;
+            }
+        }
+    
+        /* Media Queries */
+        @media screen and (max-width: 768px) {
+            h1 {
+                font-size: 30px;
+            }
+    
+            p {
+                font-size: 16px;
+            }
+    
+            .results h3,
+            .legend h3,
+            .rules h3,
+            .explanation h3 {
+                font-size: 20px;
+            }
+    
+            button {
+                width: 100%;
+                max-width: 300px;
+            }
+    
+            input {
+                width: 100%;
+            }
+        }
+    </style>
+    
+    
+</head>
+
+<body>
+    <h1>🌳 VIERNES XXI 🌳</h1>
+    <p>Selecciona el modo: letras (A-Z) o números (1-100) para construir tu árbol binario.</p>
+
+    <div class="input-container">
+        <button onclick="setMode('letters')">Modo Letras</button>
+        <button onclick="setMode('numbers')">Modo Números</button>
+        <input type="text" id="inputField" placeholder="Ingresa letras o números">
+        <button onclick="addData()">Agregar</button>
+        <button onclick="clearTree()">Limpiar</button>
+        <button onclick="startTraversal('inOrder')">InOrden</button>
+        <button onclick="startTraversal('preOrder')">PreOrden</button>
+        <button onclick="startTraversal('postOrder')">PostOrden</button>
+
+        <button onclick="toggleLegend()">Mostrar/Ocultar Leyenda</button>
+        <button onclick="toggleRules()">Ver Reglas</button>
+        <button onclick="toggleExplanation()">Por qué se agregó aquí</button>
+        <button onclick="saveTreeAndRedirect()">Ir a Gestión de Árbol</button>
+    </div>
+
+    <canvas id="treeCanvas" width="1200" height="800"></canvas>
+    <div class="results" id="results">
+        <h3>Resultados de Recorridos</h3>
+        <p><strong>InOrden:</strong> <span id="inOrder"></span></p>
+        <p><strong>PreOrden:</strong> <span id="preOrder"></span></p>
+        <p><strong>PostOrden:</strong> <span id="postOrder"></span></p>
+    </div>
+
+
+    <div class="legend" id="legend">
+        <h3>Leyenda de Colores</h3>
+        <p><strong>Raíz:</strong> Naranja.</p>
+        <p><strong>Hojas:</strong> Verde.</p>
+        <p><strong>Ramas Internas:</strong> Blanco.</p>
+        <p><strong>Línea Azul:</strong> Subárbol izquierdo (menores).</p>
+        <p><strong>Línea Roja:</strong> Subárbol derecho (mayores).</p>
+        <p><strong>Amarillo:</strong> Nodo siendo visitado en el recorrido.</p>
+    </div>
+
+    <div class="rules" id="rules">
+        <h3>Reglas de los Métodos</h3>
+        <p><strong>InOrden:</strong> Visita primero el subárbol izquierdo, luego la raíz, y finalmente el subárbol
+            derecho.</p>
+        <p><strong>PreOrden:</strong> Visita primero la raíz, luego el subárbol izquierdo, y finalmente el subárbol
+            derecho.</p>
+        <p><strong>PostOrden:</strong> Visita primero el subárbol izquierdo, luego el subárbol derecho, y finalmente la
+            raíz.</p>
+    </div>
+
+    <div class="explanation" id="explanation">
+        <h3>Explicación de Ubicación de los Nodos</h3>
+        <ul id="explanationList"></ul>
+    </div>
+
+    <script>
+        let mode = "letters"; // Modo inicial: letras
+        let explanationDetails = []; // Lista global para almacenar explicaciones
+
+        class TreeNode {
+            constructor(value) {
+                this.value = value;
+                this.left = null;
+                this.right = null;
+                this.x = 0;
+                this.y = 0;
+            }
+        }
+
+        class BinaryTree {
+            constructor() {
+                this.root = null;
+            }
+
+            insert(value) {
+                const newNode = new TreeNode(value);
+                if (!this.root) {
+                    this.root = newNode;
+                    explanationDetails.push(`Nodo ${value} es la raíz del árbol.`);
+                } else {
+                    this._insertNode(this.root, newNode, `Nodo ${value}`);
+                }
+            }
+
+
+
+            _insertNode(node, newNode, explanation) {
+                if (newNode.value < node.value) {
+                    if (!node.left) {
+                        node.left = newNode;
+                        explanationDetails.push(`${explanation} se colocó a la izquierda de ${node.value} porque es menor.`);
+                    } else {
+                        this._insertNode(node.left, newNode, explanation);
+                    }
+                } else {
+                    if (!node.right) {
+                        node.right = newNode;
+                        explanationDetails.push(`${explanation} se colocó a la derecha de ${node.value} porque es mayor o igual.`);
+                    } else {
+                        this._insertNode(node.right, newNode, explanation);
+                    }
+                }
+            }
+
+            traverseAndDraw(ctx, node, x, y, level = 1, parentX = null, parentY = null, isLeft = false) {
+                if (!node) return;
+
+                const horizontalSpacing = 400 / Math.pow(2, level);
+                const verticalSpacing = 80;
+
+                if (parentX !== null && parentY !== null) {
+                    ctx.beginPath();
+                    ctx.moveTo(parentX, parentY);
+                    ctx.lineTo(x, y);
+                    ctx.strokeStyle = isLeft ? "blue" : "red";
+                    ctx.stroke();
+                }
+
+                node.x = x;
+                node.y = y;
+
+                let nodeColor = "white";
+                if (node === this.root) nodeColor = "orange";
+                else if (!node.left && !node.right) nodeColor = "green";
+
+                ctx.beginPath();
+                ctx.arc(x, y, 20, 0, 2 * Math.PI);
+                ctx.fillStyle = nodeColor;
+                ctx.fill();
+                ctx.stroke();
+
+                ctx.fillStyle = "black";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.font = "16px Arial";
+                ctx.fillText(node.value, x, y);
+
+                this.traverseAndDraw(ctx, node.left, x - horizontalSpacing, y + verticalSpacing, level + 1, x, y, true);
+                this.traverseAndDraw(ctx, node.right, x + horizontalSpacing, y + verticalSpacing, level + 1, x, y, false);
+            }
+
+            serialize() {
+                const result = [];
+                this._serializeRec(this.root, result);
+                return JSON.stringify(result);
+            }
+
+            _serializeRec(node, result) {
+                if (!node) {
+                    result.push(null);
+                } else {
+                    result.push(node.value);
+                    this._serializeRec(node.left, result);
+                    this._serializeRec(node.right, result);
+                }
+            }
+        }
+
+        const tree = new BinaryTree();
+        const canvas = document.getElementById("treeCanvas");
+        const ctx = canvas.getContext("2d");
+
+        function addData() {
+            const input = document.getElementById("inputField").value.trim();
+
+            if (mode === "letters" && !/^[A-Z]+$/.test(input)) {
+                alert("Por favor, ingresa solo letras (A-Z).");
+                return;
+            }
+
+            if (mode === "numbers" && !/^\d+(\s\d+)*$/.test(input)) {
+                alert("Por favor, ingresa solo números (1-100).");
+                return;
+            }
+
+            const values = mode === "letters" ? input.split("") : input.split(/\s+/).map(Number);
+
+            for (const value of values) {
+                tree.insert(value);
+            }
+
+            updateTree();
+            document.getElementById("inputField").value = "";
+        }
+
+        function updateTree() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            tree.traverseAndDraw(ctx, tree.root, canvas.width / 2, 50);
+
+            // Actualiza los resultados de los recorridos
+            document.getElementById("inOrder").textContent =
+                tree.traverseInOrder(tree.root).map(node => node.value).join(", ");
+            document.getElementById("preOrder").textContent =
+                tree.traversePreOrder(tree.root).map(node => node.value).join(", ");
+            document.getElementById("postOrder").textContent =
+                tree.traversePostOrder(tree.root).map(node => node.value).join(", ");
+        }
+
+
+        function clearTree() {
+            tree.root = null;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            alert("El árbol ha sido limpiado.");
+        }
+
+        function toggleLegend() {
+            const legend = document.getElementById("legend");
+            legend.classList.toggle("visible");
+        }
+
+        function toggleRules() {
+            const rules = document.getElementById("rules");
+            rules.classList.toggle("visible");
+        }
+
+        function toggleExplanation() {
+            const explanation = document.getElementById("explanation");
+            const explanationList = document.getElementById("explanationList");
+
+            explanationList.innerHTML = "";
+            explanationDetails.forEach(detail => {
+                const listItem = document.createElement("li");
+                listItem.textContent = detail;
+                explanationList.appendChild(listItem);
+            });
+
+            explanation.classList.toggle("visible");
+        }
+
+        function setMode(selectedMode) {
+            mode = selectedMode;
+            const placeholder = mode === "letters" ? "Ingresa letras (A-Z)" : "Ingresa números (1-100)";
+            document.getElementById("inputField").placeholder = placeholder;
+            alert(`Modo cambiado a ${mode === "letters" ? "Letras" : "Números"}`);
+        }
+
+        function saveTreeAndRedirect() {
+            const serializedTree = tree.serialize();
+            localStorage.setItem("binaryTree", serializedTree);
+            location.href = "tree-management.html";
+        }
+        BinaryTree.prototype.traverseInOrder = function (node, result = []) {
+            if (node) {
+                this.traverseInOrder(node.left, result); // Subárbol izquierdo
+                result.push(node);                       // Nodo actual
+                this.traverseInOrder(node.right, result); // Subárbol derecho
+            }
+            return result;
+        };
+        BinaryTree.prototype.traversePreOrder = function (node, result = []) {
+            if (node) {
+                result.push(node);                       // Nodo actual
+                this.traversePreOrder(node.left, result); // Subárbol izquierdo
+                this.traversePreOrder(node.right, result); // Subárbol derecho
+            }
+            return result;
+        };
+        BinaryTree.prototype.traversePostOrder = function (node, result = []) {
+            if (node) {
+                this.traversePostOrder(node.left, result); // Subárbol izquierdo
+                this.traversePostOrder(node.right, result); // Subárbol derecho
+                result.push(node);                         // Nodo actual
+            }
+            return result;
+        };
+        function startTraversal(type) {
+            const order = {
+                inOrder: tree.traverseInOrder(tree.root),
+                preOrder: tree.traversePreOrder(tree.root),
+                postOrder: tree.traversePostOrder(tree.root),
+            }[type];
+
+            if (!order || order.length === 0) return;
+
+            let index = 0;
+
+            function animate() {
+                if (index > 0) {
+                    const previous = order[index - 1];
+                    tree.traverseAndDraw(ctx, tree.root, canvas.width / 2, 50); // Redibuja el árbol
+                }
+
+                if (index < order.length) {
+                    const current = order[index];
+                    ctx.beginPath();
+                    ctx.arc(current.x, current.y, 20, 0, 2 * Math.PI); // Dibuja el nodo actual
+                    ctx.fillStyle = "yellow"; // Ilumina el nodo
+                    ctx.fill();
+                    ctx.stroke();
+
+                    ctx.fillStyle = "black";
+                    ctx.textAlign = "center";
+                    ctx.textBaseline = "middle";
+                    ctx.font = "16px Arial";
+                    ctx.fillText(current.value, current.x, current.y); // Escribe el valor del nodo
+
+                    index++;
+                    setTimeout(animate, 1000); // Espera un segundo antes de avanzar al siguiente nodo
+                }
+            }
+
+            animate(); // Inicia la animación
+        }
+
+
+
+    </script>
+</body>
+
+
+</html>

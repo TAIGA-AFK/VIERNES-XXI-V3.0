@@ -1,0 +1,999 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Árbol de Operadores Matemáticos</title>
+    <style>
+        /* General */
+        body {
+            font-family: 'Courier New', monospace;
+            margin: 0;
+            padding: 0;
+            background: #101010;
+            color: #f0f0f0;
+            overflow-y: auto;
+            overflow-x: hidden;
+            position: relative;
+        }
+
+        /* Fondo animado con degradado dinámico */
+        body::before {
+            content: "";
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #1a1a1a, #3d0000, #660000);
+            animation: backgroundAnimation 10s infinite alternate;
+            z-index: -2;
+        }
+
+        @keyframes backgroundAnimation {
+            0% {
+                background: linear-gradient(135deg, #1a1a1a, #3d0000, #660000);
+            }
+
+            50% {
+                background: linear-gradient(135deg, #000000, #550000, #440000);
+            }
+
+            100% {
+                background: linear-gradient(135deg, #1a1a1a, #3d0000, #660000);
+            }
+        }
+
+        /* Burbuja dinámica */
+        .bubbles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            overflow: hidden;
+            z-index: -1;
+        }
+
+        .bubble {
+            position: absolute;
+            bottom: -100px;
+            background: rgba(255, 0, 0, 0.2);
+            /* Rojo translúcido */
+            border-radius: 50%;
+            animation: rise 12s infinite ease-in-out;
+            box-shadow: 0 4px 12px rgba(255, 0, 0, 0.4);
+            /* Sombra roja translúcida */
+        }
+
+        .bubble:nth-child(2n) {
+            animation-delay: 2s;
+            background: rgba(200, 50, 50, 0.25);
+            /* Rojo más claro */
+        }
+
+        .bubble:nth-child(3n) {
+            animation-delay: 4s;
+            background: rgba(255, 80, 80, 0.2);
+            /* Rojo medio */
+        }
+
+        .bubble:nth-child(4n) {
+            animation-delay: 6s;
+            background: rgba(255, 150, 150, 0.15);
+            /* Rojo más suave */
+        }
+
+        /* Animación de ascenso */
+        @keyframes rise {
+            0% {
+                transform: translateY(0) scale(1);
+                opacity: 0.7;
+            }
+
+            50% {
+                opacity: 1;
+            }
+
+            100% {
+                transform: translateY(-150vh) scale(1.5);
+                opacity: 0;
+            }
+        }
+
+
+
+        /* Título */
+        h1 {
+            font-size: 48px;
+            color: #ff0000;
+            /* Rojo vibrante */
+            text-align: center;
+            text-transform: uppercase;
+            margin: 20px 0;
+            letter-spacing: 5px;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 10px rgba(255, 0, 0, 0.6);
+            /* Sombra roja */
+            animation: titleGlow 3s infinite alternate;
+            /* Resplandor animado */
+        }
+
+        @keyframes titleGlow {
+            0% {
+                text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5), 0 0 10px rgba(255, 0, 0, 0.6);
+            }
+
+            100% {
+                text-shadow: 0 2px 6px rgba(0, 0, 0, 0.7), 0 0 20px rgba(255, 0, 0, 0.8);
+            }
+        }
+
+        /* Contenedor de entrada */
+        .input-container {
+            background: rgba(28, 28, 28, 0.95);
+            /* Negro translúcido */
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
+            /* Sombra negra */
+            max-width: 400px;
+            margin: 20px auto;
+            text-align: center;
+            border: 1px solid #ff0000;
+            /* Bordes rojos */
+            transition: transform 0.3s ease-in-out, box-shadow 0.3s ease-in-out;
+        }
+
+        .input-container:hover {
+            transform: scale(1.05);
+            box-shadow: 0 10px 25px rgba(255, 0, 0, 0.5);
+            /* Resplandor rojo */
+        }
+
+        /* Input y Botón */
+        input,
+        button {
+            font-family: 'Courier New', monospace;
+            font-size: 16px;
+            margin: 10px;
+            padding: 12px 18px;
+            border-radius: 8px;
+            border: none;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        input {
+            background: #2b2b2b;
+            /* Gris oscuro */
+            color: #ff4d4d;
+            /* Rojo claro */
+            width: calc(100% - 40px);
+            box-shadow: inset 0 2px 5px rgba(0, 0, 0, 0.5);
+            /* Sombra interna */
+        }
+
+        input:focus {
+            box-shadow: 0 0 10px #ff0000, inset 0 2px 5px rgba(0, 0, 0, 0.5);
+            /* Resplandor rojo */
+        }
+
+        /* Botón */
+        button {
+            background: linear-gradient(135deg, #660000, #990000);
+            /* Degradado rojo oscuro */
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 3px 8px rgba(255, 0, 0, 0.5);
+            /* Resplandor rojo */
+            border: 1px solid #ff0000;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #990000, #ff0000);
+            /* Degradado más brillante */
+            box-shadow: 0 6px 12px rgba(255, 0, 0, 0.7);
+            /* Aumenta el resplandor */
+            transform: translateY(-2px);
+            /* Sutil elevación */
+        }
+
+        /* Lienzo */
+        canvas {
+            display: block;
+            margin: 20px auto;
+            border: 2px solid #ff0000;
+            /* Bordes rojos */
+            border-radius: 10px;
+            background: #1a1a1a;
+            /* Fondo negro */
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.7);
+            /* Sombra negra */
+            animation: canvasGlow 5s infinite alternate;
+            /* Resplandor animado */
+        }
+
+        @keyframes canvasGlow {
+            0% {
+                box-shadow: 0 10px 20px rgba(255, 0, 0, 0.4);
+                /* Sombra roja */
+            }
+
+            100% {
+                box-shadow: 0 15px 30px rgba(255, 0, 0, 0.6);
+                /* Sombra más intensa */
+            }
+        }
+
+        /* Medios Responsivos */
+        @media screen and (max-width: 768px) {
+            h1 {
+                font-size: 30px;
+            }
+
+            input,
+            button {
+                font-size: 14px;
+                padding: 10px;
+            }
+
+            .input-container {
+                max-width: 300px;
+            }
+
+            canvas {
+                width: 95%;
+            }
+        }
+
+        @media screen and (max-width: 480px) {
+            h1 {
+                font-size: 24px;
+            }
+
+            input,
+            button {
+                font-size: 12px;
+            }
+
+            canvas {
+                width: 100%;
+            }
+        }
+
+        /* Estilo general */
+        .hamburger-menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        /* Botón del Menú */
+        .menu-button {
+            background: linear-gradient(135deg, #660000, #990000);
+            /* Degradado rojo oscuro */
+            border: none;
+            color: white;
+            font-size: 24px;
+            font-weight: bold;
+            padding: 10px 15px;
+            border-radius: 50%;
+            box-shadow: 0 5px 15px rgba(255, 0, 0, 0.5);
+            /* Sombra roja */
+            cursor: pointer;
+            transition: transform 0.2s ease, background 0.3s ease;
+        }
+
+        .menu-button:hover {
+            background: linear-gradient(135deg, #990000, #ff0000);
+            /* Degradado más brillante */
+            transform: rotate(90deg) scale(1.1);
+            /* Rotación al pasar el mouse */
+            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.7);
+            /* Sombra más intensa */
+        }
+
+        /* Menú desplegable */
+        .menu-dropdown {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: rgba(28, 28, 28, 0.95);
+            /* Fondo negro translúcido */
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.8);
+            /* Sombra negra */
+            border-radius: 10px;
+            text-align: left;
+            overflow: hidden;
+            animation: dropdownFade 0.3s ease-in-out;
+            /* Animación de aparición */
+        }
+
+        .menu-dropdown.active {
+            display: block;
+            animation: dropdownSlideIn 0.3s ease-in-out;
+        }
+
+        /* Estilo de los enlaces del menú */
+        .menu-dropdown a {
+            display: block;
+            color: #ff6666;
+            /* Rojo claro */
+            text-decoration: none;
+            padding: 10px 20px;
+            font-size: 16px;
+            transition: background 0.3s ease, color 0.3s ease;
+        }
+
+        .menu-dropdown a:hover {
+            background: rgba(255, 0, 0, 0.2);
+            /* Fondo rojo translúcido */
+            color: white;
+            transform: scale(1.05);
+            /* Pequeño zoom */
+        }
+
+        /* Animaciones */
+        @keyframes dropdownFade {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes dropdownSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(-15px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+
+
+        /*METODOS DE CORRIDA*/
+
+
+        /* Botón de Resultados */
+        #toggleResultsButton {
+            position: absolute;
+            top: 20px;
+            left: 20px;
+            z-index: 1000;
+            padding: 12px 20px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+            background: linear-gradient(135deg, #000000, #1a1a1a);
+            /* Degradado negro */
+            border: 2px solid #ff0000;
+            /* Borde rojo brillante */
+            border-radius: 12px;
+            cursor: pointer;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.5);
+            /* Sombra roja */
+            transition: all 0.3s ease-in-out;
+        }
+
+        #toggleResultsButton:hover {
+            background: linear-gradient(135deg, #1a1a1a, #333333);
+            /* Más claro al pasar */
+            border-color: #ff3333;
+            /* Rojo más brillante */
+            box-shadow: 0 6px 20px rgba(255, 0, 0, 0.8);
+            /* Sombra más intensa */
+            transform: scale(1.1);
+            /* Crecimiento suave */
+        }
+
+        #toggleResultsButton:active {
+            background: linear-gradient(135deg, #333333, #000000);
+            /* Más oscuro al presionar */
+            border-color: #cc0000;
+            /* Rojo oscuro */
+            transform: scale(0.95);
+            /* Reducción suave */
+        }
+
+        /* ver y no resultados*/
+
+
+        /* Contenedor de Resultados */
+        .results {
+            display: none;
+            /* Oculto inicialmente */
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            z-index: 999;
+            width: 350px;
+            background: linear-gradient(135deg, #000000, #1a1a1a);
+            /* Fondo degradado negro */
+            border: 1px solid #ff0000;
+            /* Rojo neón */
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(255, 0, 0, 0.5);
+            /* Sombra roja neón */
+            padding: 20px;
+            font-family: 'Orbitron', sans-serif;
+            /* Fuente futurista */
+            color: #ffffff;
+            /* Texto blanco */
+            animation: slideIn 0.6s ease-in-out;
+            /* Animación al aparecer */
+        }
+
+        /* Título de los Resultados */
+        .results h2 {
+            font-size: 20px;
+            margin-bottom: 15px;
+            text-align: center;
+            color: #ff0000;
+            /* Rojo brillante */
+            text-shadow: 0 0 10px #ff0000, 0 0 20px #ff0000;
+            /* Efecto de resplandor */
+            border-bottom: 2px solid #ff0000;
+            /* Línea divisoria roja */
+            padding-bottom: 10px;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+
+        /* Estilo de las líneas de texto */
+        .results p {
+            font-size: 16px;
+            line-height: 1.6;
+            color: #ff6666;
+            /* Rojo claro */
+            margin: 12px 0;
+            background: rgba(255, 0, 0, 0.1);
+            /* Fondo translúcido rojo */
+            padding: 10px;
+            border-left: 4px solid #ff0000;
+            /* Línea roja neón */
+            border-radius: 8px;
+            text-align: left;
+            font-family: 'Courier New', monospace;
+            /* Letra técnica */
+            text-shadow: 0 0 5px #ff0000;
+            /* Resplandor rojo */
+        }
+
+        /* Animación de Aparición */
+        @keyframes slideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+                /* Aparece desplazándose */
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+                /* Posición final */
+            }
+        }
+
+
+
+        /* Media Queries para móviles */
+        @media (max-width: 768px) {
+            #toggleResultsButton {
+                top: 10px;
+                left: 10px;
+                padding: 10px 15px;
+                font-size: 14px;
+                /* Tamaño más pequeño */
+            }
+
+            .results {
+                width: 90%;
+                /* Ocupa el 90% del ancho de la pantalla */
+                max-width: none;
+                /* Elimina el límite de ancho */
+                padding: 15px;
+                /* Espaciado más compacto */
+            }
+
+            .results h2 {
+                font-size: 16px;
+                /* Título más pequeño */
+            }
+
+            .results p {
+                font-size: 12px;
+                /* Texto más pequeño */
+                padding: 8px;
+                /* Espaciado más compacto */
+            }
+        }
+
+
+
+        /* Contenedor de eliminación de nodos */
+        .delete-container {
+            margin: 20px auto;
+            text-align: center;
+        }
+
+        .delete-container input {
+            margin-right: 10px;
+            padding: 10px;
+            border-radius: 5px;
+            border: 1px solid #ff0000;
+            background: #2b2b2b;
+            color: #ff4d4d;
+            outline: none;
+        }
+
+        .delete-container button {
+            background: linear-gradient(135deg, #660000, #990000);
+            color: white;
+            font-weight: bold;
+            cursor: pointer;
+            border: none;
+            padding: 10px 15px;
+            border-radius: 5px;
+            transition: all 0.3s ease;
+        }
+
+        .delete-container button:hover {
+            background: linear-gradient(135deg, #990000, #ff0000);
+        }
+
+
+        /* Efecto de Puff */
+        .puff {
+            position: fixed;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) scale(0);
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 0, 0, 0.8), rgba(0, 0, 0, 0));
+            pointer-events: none;
+            opacity: 0;
+            z-index: 9999;
+            animation: none;
+        }
+
+        @keyframes puffAnimation {
+            0% {
+                transform: translate(-50%, -50%) scale(0);
+                opacity: 1;
+            }
+
+            80% {
+                transform: translate(-50%, -50%) scale(1.5);
+                opacity: 0.7;
+            }
+
+            100% {
+                transform: translate(-50%, -50%) scale(2);
+                opacity: 0;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <h1>♾️Árbol de Operadores Matemáticos UNIVERSAL♾️</h1>
+    <div class="input-container">
+        <input type="text" id="expressionInput" placeholder="Ingresa una expresión matemática (ej: A+B*C)">
+        <button onclick="buildTree()">Generar Árbol</button>
+        <button onclick="clearTree()">Limpiar</button>
+        <!-- CONTENEDOR DE ELIMINACIÓN DE NODOS eliminar -->
+        <button onclick="saveTreeToLocalStorage()">Guardar Árbol</button>
+    </div>
+    <div class="bubbles">
+        <!-- Generar múltiples burbujas para el fondo -->
+        <div class="bubble" style="left: 10%; width: 50px; height: 50px;"></div>
+        <div class="bubble" style="left: 30%; width: 40px; height: 40px;"></div>
+        <div class="bubble" style="left: 50%; width: 60px; height: 60px;"></div>
+        <div class="bubble" style="left: 70%; width: 30px; height: 30px;"></div>
+        <div class="bubble" style="left: 90%; width: 50px; height: 50px;"></div>
+    </div>
+    <div class="hamburger-menu">
+        <button class="menu-button" onclick="toggleMenu()">☰</button>
+        <div class="menu-dropdown" id="menuDropdown">
+            <a href="index.html">INICIO</a>
+            <a href="arbolDeOperadores.html">ARBOL DE OPERADORES</a>
+            <a href="borrar.html">DEPURAR ARBOL INFINITO</a>
+        </div>
+    </div>
+
+    <!-- BOTON DE RESULTADOS -->
+    <button id="toggleResultsButton" onclick="toggleResults()">Ver Resultados</button>
+    <div id="traversals" class="results" style="display: none;">
+        <h2>Resultados de los Recorridos:</h2>
+        <p id="inorderResult"></p>
+        <p id="preorderResult"></p>
+        <p id="postorderResult"></p>
+    </div>
+
+
+
+    <link href="https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700&display=swap" rel="stylesheet">
+
+
+    <div id="puffEffect" class="puff"></div>
+
+    <script>
+        // Función para guardar el árbol en localStorage
+        function saveTreeToLocalStorage() {
+            if (tree.root) {
+                const serializedTree = JSON.stringify(tree.root, (_, value) =>
+                    typeof value === 'object' && value !== null && !Array.isArray(value) && !(value instanceof CanvasRenderingContext2D)
+                        ? { ...value, parent: undefined } // Elimina referencias circulares
+                        : value
+                );
+                localStorage.setItem("savedTree", serializedTree);
+                alert("Árbol guardado en almacenamiento local.");
+            } else {
+                alert("No hay árbol para guardar.");
+            }
+        }
+    </script>
+
+
+
+
+    <canvas id="treeCanvas" width="1200" height="1200"></canvas>
+    <script>
+
+
+
+
+
+
+
+
+        const toggleButton = document.getElementById("toggleResultsButton");
+
+        let isDragging = false;
+        let offsetX = 0;
+        let offsetY = 0;
+
+        // Iniciar el arrastre
+        toggleButton.addEventListener("mousedown", (e) => {
+            isDragging = true;
+            offsetX = e.clientX - toggleButton.getBoundingClientRect().left;
+            offsetY = e.clientY - toggleButton.getBoundingClientRect().top;
+            toggleButton.style.cursor = "grabbing";
+        });
+
+        // Terminar el arrastre
+        document.addEventListener("mouseup", () => {
+            isDragging = false;
+            toggleButton.style.cursor = "grab";
+        });
+
+        // Mover el botón mientras se arrastra
+        document.addEventListener("mousemove", (e) => {
+            if (isDragging) {
+                toggleButton.style.left = `${e.clientX - offsetX}px`;
+                toggleButton.style.top = `${e.clientY - offsetY}px`;
+            }
+        });
+
+        // Soporte para pantallas táctiles
+        toggleButton.addEventListener("touchstart", (e) => {
+            const touch = e.touches[0];
+            offsetX = touch.clientX - toggleButton.getBoundingClientRect().left;
+            offsetY = touch.clientY - toggleButton.getBoundingClientRect().top;
+            isDragging = true;
+            toggleButton.style.cursor = "grabbing";
+        });
+
+        toggleButton.addEventListener("touchend", () => {
+            isDragging = false;
+            toggleButton.style.cursor = "grab";
+        });
+
+        toggleButton.addEventListener("touchmove", (e) => {
+            if (isDragging) {
+                const touch = e.touches[0];
+                toggleButton.style.left = `${touch.clientX - offsetX}px`;
+                toggleButton.style.top = `${touch.clientY - offsetY}px`;
+            }
+        });
+
+
+
+
+        function toggleMenu() {
+            const menuDropdown = document.getElementById("menuDropdown");
+            menuDropdown.classList.toggle("active");
+        }
+
+        const canvas = document.getElementById("treeCanvas");
+        const ctx = canvas.getContext("2d");
+
+        let draggedNode = null;
+
+        canvas.addEventListener("mousedown", (e) => {
+            const { x, y } = getCanvasCoordinates(e);
+            draggedNode = findNodeUnderCursor(tree.root, x, y);
+        });
+
+        canvas.addEventListener("mousemove", (e) => {
+            if (draggedNode) {
+                const { x, y } = getCanvasCoordinates(e);
+                draggedNode.x = x;
+                draggedNode.y = y;
+                updateTree();
+            }
+        });
+
+        canvas.addEventListener("mouseup", () => {
+            draggedNode = null;
+        });
+
+        canvas.addEventListener("touchstart", (e) => {
+            const touch = e.touches[0];
+            const { x, y } = getCanvasCoordinates(touch);
+            draggedNode = findNodeUnderCursor(tree.root, x, y);
+        });
+
+        canvas.addEventListener("touchmove", (e) => {
+            if (draggedNode) {
+                const touch = e.touches[0];
+                const { x, y } = getCanvasCoordinates(touch);
+                draggedNode.x = x;
+                draggedNode.y = y;
+                updateTree();
+            }
+        });
+
+        canvas.addEventListener("touchend", () => {
+            draggedNode = null;
+        });
+
+        class TreeNode {
+            constructor(value) {
+                this.value = value;
+                this.left = null;
+                this.right = null;
+                this.x = null;
+                this.y = null;
+            }
+        }
+
+        class ExpressionTree {
+            constructor() {
+                this.root = null;
+            }
+            inOrderTraversal(node, result = []) {
+                if (!node) return result;
+                this.inOrderTraversal(node.left, result);
+                result.push(node.value);
+                this.inOrderTraversal(node.right, result);
+                return result;
+            }
+
+            preOrderTraversal(node, result = []) {
+                if (!node) return result;
+                result.push(node.value);
+                this.preOrderTraversal(node.left, result);
+                this.preOrderTraversal(node.right, result);
+                return result;
+            }
+
+            postOrderTraversal(node, result = []) {
+                if (!node) return result;
+                this.postOrderTraversal(node.left, result);
+                this.postOrderTraversal(node.right, result);
+                result.push(node.value);
+                return result;
+            }
+
+
+            buildFromExpression(expression) {
+                const tokens = this.tokenize(expression);
+                const postfix = this.toPostfix(tokens);
+                this.root = this.buildTreeFromPostfix(postfix);
+                this.positionNodes(this.root, canvas.width / 2, 50);
+            }
+
+            tokenize(expression) {
+                const regex = /([a-zA-Z_][a-zA-Z0-9_]*|\d+\.?\d*|[+\-*/^(),])/g;
+                return expression.match(regex);
+            }
+
+            toPostfix(tokens) {
+                const precedence = {
+                    '+': 1,
+                    '-': 1,
+                    '*': 2,
+                    '/': 2,
+                    '^': 3
+                };
+                const output = [];
+                const operators = [];
+
+                tokens.forEach(token => {
+                    if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(token) || /^\d+\.?\d*$/.test(token)) {
+                        output.push(token);
+                    } else if (token === '(') {
+                        operators.push(token);
+                    } else if (token === ')') {
+                        while (operators.length && operators[operators.length - 1] !== '(') {
+                            output.push(operators.pop());
+                        }
+                        operators.pop();
+                    } else {
+                        while (
+                            operators.length &&
+                            precedence[operators[operators.length - 1]] >= precedence[token]
+                        ) {
+                            output.push(operators.pop());
+                        }
+                        operators.push(token);
+                    }
+                });
+
+                while (operators.length) {
+                    output.push(operators.pop());
+                }
+
+                return output;
+            }
+
+            buildTreeFromPostfix(postfix) {
+                const stack = [];
+                postfix.forEach(token => {
+                    if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(token) || /^\d+\.?\d*$/.test(token)) {
+                        stack.push(new TreeNode(token));
+                    } else {
+                        const node = new TreeNode(token);
+                        if (stack.length) node.right = stack.pop();
+                        if (stack.length) node.left = stack.pop();
+                        stack.push(node);
+                    }
+                });
+                return stack.pop();
+            }
+
+            positionNodes(node, x, y, level = 1) {
+                if (!node) return;
+                const horizontalSpacing = 400 / Math.pow(2, level);
+                const verticalSpacing = 80;
+                node.x = x;
+                node.y = y;
+                this.positionNodes(node.left, x - horizontalSpacing, y + verticalSpacing, level + 1);
+                this.positionNodes(node.right, x + horizontalSpacing, y + verticalSpacing, level + 1);
+            }
+
+            traverseAndDraw(ctx, node) {
+                if (!node) return;
+                if (node.left) this.drawEdge(node.x, node.y, node.left.x, node.left.y, true); // Izquierda (azul)
+                if (node.right) this.drawEdge(node.x, node.y, node.right.x, node.right.y, false); // Derecha (rojo)
+                this.drawNode(node);
+                this.traverseAndDraw(ctx, node.left);
+                this.traverseAndDraw(ctx, node.right);
+            }
+
+            drawEdge(x1, y1, x2, y2, isLeft) {
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+
+                // Azul para conexiones a la izquierda, rojo para la derecha
+                ctx.strokeStyle = isLeft ? "#3385FF" : "#FF3333";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            drawNode(node) {
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, 30, 0, 2 * Math.PI);
+
+                if (!node.left && !node.right) {
+                    ctx.fillStyle = "#33FF57"; // Verde para hojas
+                } else if (node.parent === null) {
+                    ctx.fillStyle = "#FF5733"; // Naranja para la raíz
+                } else {
+                    ctx.fillStyle = "#3385FF"; // Azul para ramas
+                }
+
+                ctx.fill();
+                ctx.strokeStyle = "white";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.fillStyle = "black";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.font = "bold 16px Arial";
+                ctx.fillText(node.value, node.x, node.y);
+            }
+        }
+
+        const tree = new ExpressionTree();
+        function toggleResults() {
+            const resultsDiv = document.getElementById("traversals");
+            const button = document.getElementById("toggleResultsButton");
+
+            if (resultsDiv.style.display === "none" || resultsDiv.style.display === "") {
+                resultsDiv.style.display = "block";
+                button.textContent = "Ocultar Resultados";
+            } else {
+                resultsDiv.style.display = "none";
+                button.textContent = "Ver Resultados";
+            }
+        }
+
+
+
+
+        function buildTree() {
+            const expression = document.getElementById("expressionInput").value.trim();
+            if (!expression) {
+                alert("Por favor, ingresa una expresión.");
+                return;
+            }
+
+            // Construir el árbol
+            tree.buildFromExpression(expression);
+            updateTree();
+
+            // Generar los resultados de los recorridos
+            const inOrder = tree.inOrderTraversal(tree.root).join(" ");
+            const preOrder = tree.preOrderTraversal(tree.root).join(" ");
+            const postOrder = tree.postOrderTraversal(tree.root).join(" ");
+
+            // Actualizar los resultados en el DOM
+            document.getElementById("inorderResult").textContent = `Inorden: ${inOrder}`;
+            document.getElementById("preorderResult").textContent = `Preorden: ${preOrder}`;
+            document.getElementById("postorderResult").textContent = `Postorden: ${postOrder}`;
+
+            // Asegurar que el contenedor esté visible
+            document.getElementById("traversals").style.display = "block";
+            document.getElementById("toggleResultsButton").textContent = "Ocultar Resultados";
+        }
+
+
+        function updateTree() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            tree.traverseAndDraw(ctx, tree.root);
+        }
+
+        function clearTree() {
+            tree.root = null;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            document.getElementById("expressionInput").value = "";
+        }
+
+        function getCanvasCoordinates(event) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: event.clientX - rect.left,
+                y: event.clientY - rect.top
+            };
+        }
+
+        function findNodeUnderCursor(node, x, y) {
+            if (!node) return null;
+            const distance = Math.sqrt((x - node.x) ** 2 + (y - node.y) ** 2);
+            if (distance <= 30) return node;
+            return findNodeUnderCursor(node.left, x, y) || findNodeUnderCursor(node.right, x, y);
+        }
+    </script>
+
+</body>
+
+</html>

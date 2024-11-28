@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Árbol de Operadores</title>
+    <style>
+        /* General */
+        body {
+            font-family: 'Roboto', Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: radial-gradient(circle, #141e30, #243b55);
+            color: #ffffff;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-start;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        /* Fondo animado */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.9));
+            animation: gradientMove 10s infinite alternate;
+            z-index: -2;
+        }
+
+        @keyframes gradientMove {
+            0% {
+                background: radial-gradient(circle, #141e30, #243b55);
+            }
+            100% {
+                background: radial-gradient(circle, #243b55, #141e30);
+            }
+        }
+
+        /* Título */
+        h1 {
+            font-size: 48px;
+            text-transform: uppercase;
+            color: #00d4ff;
+            text-shadow: 0px 4px 10px rgba(0, 0, 0, 0.5), 0 0 15px #48c6ef;
+            animation: glow 3s infinite alternate;
+            margin: 20px 0;
+        }
+
+        @keyframes glow {
+            from {
+                text-shadow: 0 4px 10px rgba(0, 0, 0, 0.5), 0 0 15px #48c6ef;
+            }
+            to {
+                text-shadow: 0 6px 15px rgba(0, 0, 0, 0.7), 0 0 30px #6f86d6, 0 0 50px #00d4ff;
+            }
+        }
+
+        /* Contenedor de entrada */
+        .input-container {
+            background: rgba(0, 0, 0, 0.4);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.6);
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        input {
+            padding: 12px 15px;
+            font-size: 18px;
+            border: none;
+            border-radius: 10px;
+            outline: none;
+            width: 300px;
+            background: #1e1e2f;
+            color: #ffffff;
+            box-shadow: inset 0 3px 6px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease-in-out;
+        }
+
+        input:focus {
+            box-shadow: 0 0 10px #00d4ff, inset 0 3px 6px rgba(0, 0, 0, 0.5);
+        }
+
+        button {
+            padding: 12px 25px;
+            font-size: 16px;
+            font-weight: bold;
+            color: #ffffff;
+            border: none;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #48c6ef, #6f86d6);
+            cursor: pointer;
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.5);
+            transition: all 0.3s ease-in-out;
+        }
+
+        button:hover {
+            background: linear-gradient(135deg, #6f86d6, #00d4ff);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.7);
+            transform: scale(1.1);
+        }
+
+        /* Menú */
+        .hamburger-menu {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            z-index: 10;
+        }
+
+        .menu-button {
+            background: #00d4ff;
+            color: #ffffff;
+            border: none;
+            padding: 12px;
+            font-size: 20px;
+            border-radius: 50%;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+            cursor: pointer;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .menu-button:hover {
+            background: #48c6ef;
+            transform: rotate(180deg);
+        }
+
+        .menu-dropdown {
+            display: none;
+            position: absolute;
+            top: 60px;
+            right: 0;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            box-shadow: 0 8px 15px rgba(0, 0, 0, 0.5);
+            padding: 10px;
+        }
+
+        .menu-dropdown a {
+            display: block;
+            padding: 10px 20px;
+            color: #ffffff;
+            text-decoration: none;
+            font-size: 16px;
+            transition: all 0.3s ease-in-out;
+        }
+
+        .menu-dropdown a:hover {
+            background: #48c6ef;
+            color: #000;
+        }
+
+        .hamburger-menu.active .menu-dropdown {
+            display: block;
+        }
+
+        /* Canvas */
+        .canvas-container {
+            max-width: 80%;
+            margin: 20px auto;
+            padding: 15px;
+            border-radius: 15px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.1);
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            border-radius: 10px;
+            background: linear-gradient(135deg, #1e1e2f, #1c2833);
+        }
+
+        @media screen and (max-width: 768px) {
+            h1 {
+                font-size: 36px;
+            }
+
+            input {
+                width: 100%;
+            }
+
+            button {
+                font-size: 14px;
+                padding: 10px 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h1>⅀ Árbol de Operadores Matemáticos ∭</h1>
+    <div class="input-container">
+        <input type="text" id="expressionInput" placeholder="Ingresa una expresión matemática (ej: A+B*C)">
+        <button onclick="buildTree()">Generar Árbol</button>
+        <button onclick="clearTree()">Limpiar</button>
+    </div>
+    <div class="hamburger-menu">
+        <button class="menu-button" onclick="toggleMenu()">☰</button>
+        <div class="menu-dropdown" id="menuDropdown">
+            <a href="index.html">INICIO</a>
+            <a href="arbolOperadoresinfinito.html">ARBOL DE OPERADORES UNIVERSAL ♾️</a>
+        </div>
+    </div>
+    <div class="canvas-container">
+        <canvas id="treeCanvas" width="1200" height="800"></canvas>
+    </div>
+
+    <script>
+        function toggleMenu() {
+            const menu = document.querySelector('.hamburger-menu');
+            menu.classList.toggle('active');
+        }
+
+        const canvas = document.getElementById("treeCanvas");
+        const ctx = canvas.getContext("2d");
+
+        let draggedNode = null;
+
+        canvas.addEventListener("mousedown", (e) => {
+            const { x, y } = getCanvasCoordinates(e);
+            draggedNode = findNodeUnderCursor(tree.root, x, y);
+        });
+
+        canvas.addEventListener("mousemove", (e) => {
+            if (draggedNode) {
+                const { x, y } = getCanvasCoordinates(e);
+                draggedNode.x = x;
+                draggedNode.y = y;
+                updateTree();
+            }
+        });
+
+        canvas.addEventListener("mouseup", () => {
+            draggedNode = null;
+        });
+
+        canvas.addEventListener("touchstart", (e) => {
+            const touch = e.touches[0];
+            const { x, y } = getCanvasCoordinates(touch);
+            draggedNode = findNodeUnderCursor(tree.root, x, y);
+        });
+
+        canvas.addEventListener("touchmove", (e) => {
+            if (draggedNode) {
+                const touch = e.touches[0];
+                const { x, y } = getCanvasCoordinates(touch);
+                draggedNode.x = x;
+                draggedNode.y = y;
+                updateTree();
+            }
+        });
+
+        canvas.addEventListener("touchend", () => {
+            draggedNode = null;
+        });
+
+        class TreeNode {
+            constructor(value) {
+                this.value = value;
+                this.left = null;
+                this.right = null;
+                this.x = null;
+                this.y = null;
+            }
+        }
+
+        class ExpressionTree {
+            constructor() {
+                this.root = null;
+            }
+
+            buildFromExpression(expression) {
+                const tokens = this.tokenize(expression);
+                const postfix = this.toPostfix(tokens);
+                this.root = this.buildTreeFromPostfix(postfix);
+                this.positionNodes(this.root, canvas.width / 2, 50);
+            }
+
+            tokenize(expression) {
+                const regex = /([a-zA-Z_][a-zA-Z0-9_]*|\d+\.?\d*|[+\-*/^(),])/g;
+                return expression.match(regex);
+            }
+
+            toPostfix(tokens) {
+                const precedence = {
+                    '+': 1,
+                    '-': 1,
+                    '*': 2,
+                    '/': 2,
+                    '^': 3
+                };
+                const output = [];
+                const operators = [];
+
+                tokens.forEach(token => {
+                    if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(token) || /^\d+\.?\d*$/.test(token)) {
+                        output.push(token);
+                    } else if (token === '(') {
+                        operators.push(token);
+                    } else if (token === ')') {
+                        while (operators.length && operators[operators.length - 1] !== '(') {
+                            output.push(operators.pop());
+                        }
+                        operators.pop();
+                    } else {
+                        while (
+                            operators.length &&
+                            precedence[operators[operators.length - 1]] >= precedence[token]
+                        ) {
+                            output.push(operators.pop());
+                        }
+                        operators.push(token);
+                    }
+                });
+
+                while (operators.length) {
+                    output.push(operators.pop());
+                }
+
+                return output;
+            }
+
+            buildTreeFromPostfix(postfix) {
+                const stack = [];
+                postfix.forEach(token => {
+                    if (/^[a-zA-Z_][a-zA-Z0-9_]*$/.test(token) || /^\d+\.?\d*$/.test(token)) {
+                        stack.push(new TreeNode(token));
+                    } else {
+                        const node = new TreeNode(token);
+                        if (stack.length) node.right = stack.pop();
+                        if (stack.length) node.left = stack.pop();
+                        stack.push(node);
+                    }
+                });
+                return stack.pop();
+            }
+
+            positionNodes(node, x, y, level = 1) {
+                if (!node) return;
+                const horizontalSpacing = 400 / Math.pow(2, level);
+                const verticalSpacing = 80;
+                node.x = x;
+                node.y = y;
+                this.positionNodes(node.left, x - horizontalSpacing, y + verticalSpacing, level + 1);
+                this.positionNodes(node.right, x + horizontalSpacing, y + verticalSpacing, level + 1);
+            }
+
+            traverseAndDraw(ctx, node) {
+                if (!node) return;
+                if (node.left) this.drawEdge(node.x, node.y, node.left.x, node.left.y, true); // Izquierda (azul)
+                if (node.right) this.drawEdge(node.x, node.y, node.right.x, node.right.y, false); // Derecha (rojo)
+                this.drawNode(node);
+                this.traverseAndDraw(ctx, node.left);
+                this.traverseAndDraw(ctx, node.right);
+            }
+
+            drawEdge(x1, y1, x2, y2, isLeft) {
+                ctx.beginPath();
+                ctx.moveTo(x1, y1);
+                ctx.lineTo(x2, y2);
+
+                // Azul para conexiones a la izquierda, rojo para la derecha
+                ctx.strokeStyle = isLeft ? "#3385FF" : "#FF3333";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            drawNode(node) {
+                ctx.beginPath();
+                ctx.arc(node.x, node.y, 30, 0, 2 * Math.PI);
+
+                if (!node.left && !node.right) {
+                    ctx.fillStyle = "#33FF57"; // Verde para hojas
+                } else if (node.parent === null) {
+                    ctx.fillStyle = "#FF5733"; // Naranja para la raíz
+                } else {
+                    ctx.fillStyle = "#3385FF"; // Azul para ramas
+                }
+
+                ctx.fill();
+                ctx.strokeStyle = "white";
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.fillStyle = "black";
+                ctx.textAlign = "center";
+                ctx.textBaseline = "middle";
+                ctx.font = "bold 16px Arial";
+                ctx.fillText(node.value, node.x, node.y);
+            }
+        }
+
+        const tree = new ExpressionTree();
+
+        function buildTree() {
+            const expression = document.getElementById("expressionInput").value.trim();
+            if (!expression) {
+                alert("Por favor, ingresa una expresión.");
+                return;
+            }
+
+            tree.buildFromExpression(expression);
+            updateTree();
+        }
+
+        function updateTree() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            tree.traverseAndDraw(ctx, tree.root);
+        }
+
+        function clearTree() {
+            tree.root = null;
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            document.getElementById("expressionInput").value = "";
+        }
+
+        function getCanvasCoordinates(event) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: event.clientX - rect.left,
+                y: event.clientY - rect.top
+            };
+        }
+
+        function findNodeUnderCursor(node, x, y) {
+            if (!node) return null;
+            const distance = Math.sqrt((x - node.x) ** 2 + (y - node.y) ** 2);
+            if (distance <= 30) return node;
+            return findNodeUnderCursor(node.left, x, y) || findNodeUnderCursor(node.right, x, y);
+        }
+    </script>
+</body>
+
+</html>
